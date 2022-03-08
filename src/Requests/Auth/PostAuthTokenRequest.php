@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * User: Henny Krijnen
+ * Date: 08-03-22 11:49
+ * Copyright (c) eWarehousing Solutions
+ */
+
+namespace MiddlewareConnector\Requests\Auth;
+
+use Sammyjo20\Saloon\Constants\Saloon;
+use Sammyjo20\Saloon\Http\SaloonRequest;
+use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
+
+class PostAuthTokenRequest extends SaloonRequest
+{
+    use HasJsonBody;
+
+    protected ?string $method = Saloon::POST;
+
+    public function defineEndpoint(): string
+    {
+        return '/wms/auth/login/';
+    }
+
+    public function defaultData(): array
+    {
+        return [
+            'username' => $this->username,
+            'password' => $this->password,
+        ];
+    }
+
+    public function __construct(
+        private string $username,
+        private string $password
+    ) {
+    }
+}
