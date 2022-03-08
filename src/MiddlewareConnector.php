@@ -69,7 +69,7 @@ class MiddlewareConnector extends SaloonConnector
         string $wmsCode,
         string $customerCode,
         string $baseUrl = self::BASE_URL_EU_DEV,
-    ) {
+    ): static {
         return new static(
             wmsCode: $wmsCode,
             customerCode: $customerCode,
@@ -84,7 +84,7 @@ class MiddlewareConnector extends SaloonConnector
         string $wmsCode,
         string $customerCode,
         string $baseUrl = self::BASE_URL_EU_DEV,
-    ) {
+    ): static {
         return new static(
             wmsCode: $wmsCode,
             customerCode: $customerCode,
