@@ -2,7 +2,7 @@
 
 /**
  * User: Henny Krijnen
- * Date: 08-03-22 11:49
+ * Date: 08-03-22 14:54
  * Copyright (c) eWarehousing Solutions
  */
 
@@ -10,10 +10,13 @@ namespace MiddlewareConnector\Requests\Article;
 
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
+use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
 
-class GetArticleSingleRequest extends SaloonRequest
+class PatchArticleSingleRequest extends SaloonRequest
 {
-    protected ?string $method = Saloon::GET;
+    use HasJsonBody;
+
+    protected ?string $method = Saloon::PATCH;
 
     public function defineEndpoint(): string
     {

@@ -9,19 +9,26 @@
 namespace MiddlewareConnector;
 
 use Sammyjo20\Saloon\Http\SaloonConnector;
+use Sammyjo20\Saloon\Http\SaloonRequest;
+
 use MiddlewareConnector\Requests\Article\GetArticleCollectionRequest;
 use MiddlewareConnector\Requests\Article\GetArticleSingleRequest;
 use MiddlewareConnector\Requests\Article\PostArticleCollectionRequest;
 use MiddlewareConnector\Requests\Article\PostArticleSingleRequest;
+use MiddlewareConnector\Requests\Article\PatchArticleSingleRequest;
+use MiddlewareConnector\Requests\Batch\GetBatchCollectionRequest;
+use MiddlewareConnector\Requests\Batch\GetBatchSingleRequest;
 use MiddlewareConnector\Requests\Auth\PostAuthTokenRequest;
 use MiddlewareConnector\Requests\Auth\PostRefreshTokenRequest;
-use Sammyjo20\Saloon\Http\SaloonRequest;
 
 /**
  * @method GetArticleCollectionRequest getArticleCollectionRequest
  * @method GetArticleSingleRequest getArticleSingleRequest(string $uuid)
  * @method PostArticleCollectionRequest postArticleCollectionRequest
  * @method PostArticleSingleRequest postArticleSingleRequest
+ * @method PatchArticleSingleRequest patchArticleSingleRequest(string $uuid)
+ * @method GetBatchCollectionRequest getBatchCollectionRequest
+ * @method GetBatchSingleRequest getBatchSingleRequest(string $uuid)
  * @method PostRefreshTokenRequest postRefreshTokenRequest(string $refreshToken)
  * @method PostAuthTokenRequest postAuthTokenRequest(string $username, string $password)
  */
@@ -36,6 +43,9 @@ class MiddlewareConnector extends SaloonConnector
         GetArticleSingleRequest::class,
         PostArticleCollectionRequest::class,
         PostArticleSingleRequest::class,
+        PatchArticleSingleRequest::class,
+        GetBatchCollectionRequest::class,
+        GetBatchSingleRequest::class,
         PostRefreshTokenRequest::class,
         PostAuthTokenRequest::class,
     ];
