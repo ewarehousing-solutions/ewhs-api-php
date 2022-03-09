@@ -1,7 +1,7 @@
 {
     "name": "ewarehousing-solutions/ewhs-api-php",
     "description": "eWarehousing solutions middleware api package",
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "keywords": [
         "ewarehousing",
