@@ -1,4 +1,7 @@
 # eWarehousing Solutions Php Library
+===
+
+[![Latest Stable Version](http://poser.pugx.org/ewarehousing-solutions/ewhs-api-php/v)](https://packagist.org/packages/ewarehousing-solutions/ewhs-api-php) [![Total Downloads](http://poser.pugx.org/ewarehousing-solutions/ewhs-api-php/downloads)](https://packagist.org/packages/ewarehousing-solutions/ewhs-api-php) [![Latest Unstable Version](http://poser.pugx.org/ewarehousing-solutions/ewhs-api-php/v/unstable)](https://packagist.org/packages/ewarehousing-solutions/ewhs-api-php) [![License](http://poser.pugx.org/ewarehousing-solutions/ewhs-api-php/license)](https://packagist.org/packages/ewarehousing-solutions/ewhs-api-php) [![PHP Version Require](http://poser.pugx.org/ewarehousing-solutions/ewhs-api-php/require/php)](https://packagist.org/packages/ewarehousing-solutions/ewhs-api-php)
 
 This library provides convenient access to the eWarehousing Solutions API from applications written in the php
 language.
