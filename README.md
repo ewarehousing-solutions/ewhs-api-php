@@ -13,7 +13,7 @@ Api documentation: https://documenter.getpostman.com/view/19192450/UVeNn35H
 ## Installation
 
 ```
-composer req ewhs-api-php
+composer require ewarehousing-solutions/ewhs-api-php
 ```
 
 ### Requirements
