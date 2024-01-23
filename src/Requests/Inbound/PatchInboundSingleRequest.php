@@ -8,17 +8,18 @@
 
 namespace MiddlewareConnector\Requests\Inbound;
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
+use Saloon\Contracts\Body\HasBody;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
+use Saloon\Traits\Body\HasJsonBody;
 
-class PatchInboundSingleRequest extends SaloonRequest
+class PatchInboundSingleRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected ?string $method = Saloon::PATCH;
+    protected Method $method = Method::PATCH;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return 'wms/inbounds/' . $this->uuid;
     }

@@ -8,14 +8,14 @@
 
 namespace MiddlewareConnector\Requests\Order;
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 
-class GetOrderDocumentSingleRequest extends SaloonRequest
+class GetOrderDocumentSingleRequest extends Request
 {
-    protected ?string $method = Saloon::GET;
+    protected Method $method = Method::GET;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return 'wms/orders/' . $this->uuid . '/documents' . $this->documentUuid;
     }

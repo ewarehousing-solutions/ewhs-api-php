@@ -10,15 +10,13 @@ namespace MiddlewareConnector;
 
 use DateTime;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
 use MiddlewareConnector\Requests\Auth\PostAuthTokenRequest;
 use MiddlewareConnector\Requests\Auth\PostRefreshTokenRequest;
-use Sammyjo20\Saloon\Exceptions\SaloonException;
-use Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException;
-use Sammyjo20\Saloon\Helpers\Keychain;
-use Sammyjo20\Saloon\Http\SaloonRequest;
+use Saloon\Contracts\PendingRequest;
 use MiddlewareConnector\Exceptions\AuthenticationException;
 
-class MiddlewareKeyChain extends Keychain
+class MiddlewareKeyChain implements \Saloon\Contracts\Authenticator
 {
     private ?DateTime $tokenExpiresAt = null;
     private ?string $token = null;
@@ -33,60 +31,63 @@ class MiddlewareKeyChain extends Keychain
     /**
      * Called every request
      *
-     * @param  SaloonRequest $request
+     * @param PendingRequest $pendingRequest
      * @return void
      * @throws AuthenticationException
      * @throws GuzzleException
-     * @throws SaloonException
-     * @throws SaloonInvalidConnectorException
      * @throws \ReflectionException
      */
-    public function boot(SaloonRequest $request): void
+    public function boot(PendingRequest $pendingRequest): void
     {
         if ($this->tokenExpiresAt == null || $this->tokenExpiresAt < new DateTime()) {
-            $this->fetchToken($request);
+            $this->fetchToken($pendingRequest);
         }
 
         if ($this->token) {
-            $request->withToken($this->token);
+            $pendingRequest->getConnector()->withTokenAuth($this->token);
         }
     }
 
     /**
      * Fetch token logic
      *
-     * @param SaloonRequest $request
+     * @param PendingRequest $pendingRequest
      *
      * @return void
      *
      * @throws AuthenticationException
      * @throws GuzzleException
      * @throws \ReflectionException
-     * @throws SaloonException
-     * @throws SaloonInvalidConnectorException
      */
-    private function fetchToken(SaloonRequest $request): void
+    private function fetchToken(PendingRequest $pendingRequest): void
     {
-        if (!$this->shouldFetch($request)) {
+        Log::Info('ghellef');
+        if (!$this->shouldFetch($pendingRequest)) {
             return;
         }
 
         /** @var MiddlewareConnector $connector */
-        $connector = $request->getConnector();
+        $connector = $pendingRequest->getConnector();
 
         if ($this->refreshToken === null) {
-            $auth = $connector->postAuthTokenRequest(
+            $request = new postAuthTokenRequest(
                 username: $this->username,
                 password: $this->password,
-            )->send($connector->getConfig('mockClient'));
+            );
+            $auth = $connector->send($request);
+//            $auth =  $connector->postAuthTokenRequest(
+//                username: $this->username,
+//                password: $this->password,
+//            )-> ($connector->getConfig('mockClient'));
 
             if ($auth->status() !== 200) {
                 throw new AuthenticationException('Could not fetch new token!');
             }
         } else {
-            $auth = $connector->postRefreshTokenRequest(
+            $request = new PostRefreshTokenRequest(
                 refreshToken: $this->refreshToken,
-            )->send($connector->getConfig('mockClient'));
+            );
+            $auth = $connector->send($request);
 
             if ($auth->status() !== 200) {
                 throw new AuthenticationException('Could not refresh token!');
@@ -103,18 +104,23 @@ class MiddlewareKeyChain extends Keychain
     /**
      * Validates if we need to auth for current route
      *
-     * @param  SaloonRequest $request
+     * @param  PendingRequest $pendingRequest
      * @return bool
      */
-    private function shouldFetch(SaloonRequest $request): bool
+    private function shouldFetch(PendingRequest $pendingRequest): bool
     {
         if (
-            $request->defineEndpoint() !== (new PostAuthTokenRequest('ignore', 'ignore'))->defineEndpoint()
-            && $request->defineEndpoint() !== (new PostRefreshTokenRequest('ignore'))->defineEndpoint()
+            $pendingRequest->getUrl() !== (new PostAuthTokenRequest('ignore', 'ignore'))->resolveEndpoint()
+            && $pendingRequest->getUrl() !== (new PostRefreshTokenRequest('ignore'))->resolveEndpoint()
         ) {
             return true;
         }
 
         return false;
+    }
+
+    public function set(PendingRequest $pendingRequest): void
+    {
+        // TODO: Implement set() method.
     }
 }

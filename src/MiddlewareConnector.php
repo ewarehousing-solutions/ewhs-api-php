@@ -8,6 +8,8 @@
 
 namespace MiddlewareConnector;
 
+use DateTime;
+use Illuminate\Support\Facades\Log;
 use MiddlewareConnector\Requests\Inbound\GetInboundCollectionRequest;
 use MiddlewareConnector\Requests\Inbound\GetInboundSingleRequest;
 use MiddlewareConnector\Requests\Inbound\PatchInboundSingleCancelRequest;
@@ -42,8 +44,10 @@ use MiddlewareConnector\Requests\Variant\PatchVariantSingleRequest;
 use MiddlewareConnector\Requests\Variant\PostVariantSingleRequest;
 use MiddlewareConnector\Requests\Webhook\GetWebhookCollectionRequest;
 use MiddlewareConnector\Requests\Webhook\PostWebhookSingleRequest;
-use Sammyjo20\Saloon\Http\SaloonConnector;
-use Sammyjo20\Saloon\Http\SaloonRequest;
+use Saloon\Contracts\Authenticator;
+use Saloon\Contracts\PendingRequest;
+use Saloon\Http\Connector;
+use Saloon\Http\Request;
 
 /**
  * @method GetArticleCollectionRequest getArticleCollectionRequest
@@ -91,7 +95,7 @@ use Sammyjo20\Saloon\Http\SaloonRequest;
  * @method GetWebhookCollectionRequest getWebhookCollectionRequest
  * @method PostWebhookSingleRequest postWebhookSingleRequest
  */
-class MiddlewareConnector extends SaloonConnector
+class MiddlewareConnector extends Connector
 {
     public const BASE_URL_EU_DEV = 'https://eu-dev.middleware.ewarehousing-solutions.com';
     public const BASE_URL_EU = 'https://eu.middleware.ewarehousing-solutions.com';
@@ -146,6 +150,9 @@ class MiddlewareConnector extends SaloonConnector
     ];
 
     private MiddlewareKeyChain $middlewareKeyChain;
+//    private ?DateTime $tokenExpiresAt = null;
+//    private ?string $token = null;
+
 
     public function __construct(
         private string $wmsCode,
@@ -153,9 +160,9 @@ class MiddlewareConnector extends SaloonConnector
         private string $baseUrl = self::BASE_URL_EU_DEV,
         private ?string $username = null,
         private ?string $password = null,
-        private ?string $refreshToken = null,
+        //private ?string $refreshToken = null,
     ) {
-        $this->middlewareKeyChain = new MiddlewareKeyChain($this->username, $this->password, $this->refreshToken);
+        //$this->middlewareKeyChain = new MiddlewareKeyChain($this->username, $this->password, $this->refreshToken);
     }
 
     public static function create(
@@ -184,11 +191,11 @@ class MiddlewareConnector extends SaloonConnector
             wmsCode: $wmsCode,
             customerCode: $customerCode,
             baseUrl: $baseUrl,
-            refreshToken: $refreshToken,
+            //refreshToken: $refreshToken,
         );
     }
 
-    public function defineBaseUrl(): string
+    public function resolveBaseUrl(): string
     {
         return $this->baseUrl;
     }
@@ -212,8 +219,8 @@ class MiddlewareConnector extends SaloonConnector
         ];
     }
 
-    public function boot(SaloonRequest $request): void
+    protected function defaultAuth(): ?Authenticator
     {
-        $this->authenticate($this->middlewareKeyChain);
+        return new ForgeAuthenticator($this->username, $this->password);
     }
 }

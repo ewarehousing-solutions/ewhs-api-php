@@ -8,17 +8,18 @@
 
 namespace MiddlewareConnector\Requests\Webhook;
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
+use Saloon\Contracts\Body\HasBody;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
+use Saloon\Traits\Body\HasJsonBody;
 
-class PostWebhookSingleRequest extends SaloonRequest
+class PostWebhookSingleRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected ?string $method = Saloon::POST;
+    protected Method $method = Method::POST;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return 'webhooks/';
     }

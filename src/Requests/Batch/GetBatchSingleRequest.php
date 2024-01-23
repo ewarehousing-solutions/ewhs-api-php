@@ -8,14 +8,14 @@
 
 namespace MiddlewareConnector\Requests\Batch;
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 
-class GetBatchSingleRequest extends SaloonRequest
+class GetBatchSingleRequest extends Request
 {
-    protected ?string $method = Saloon::GET;
+    protected Method $method = Method::GET;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return 'wms/batches/' . $this->uuid;
     }
