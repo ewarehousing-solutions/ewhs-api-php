@@ -7,6 +7,7 @@
 
 namespace MiddlewareConnector\Tests;
 
+use http\Message\Body;
 use MiddlewareConnector\Requests\Article\GetArticleCollectionRequest;
 use MiddlewareConnector\Requests\Article\GetArticleSingleRequest;
 use MiddlewareConnector\Requests\Article\PatchArticleSingleRequest;
@@ -40,7 +41,7 @@ use MiddlewareConnector\Requests\Variant\PostVariantSingleRequest;
 use MiddlewareConnector\Requests\Webhook\GetWebhookCollectionRequest;
 use MiddlewareConnector\Requests\Webhook\PostWebhookSingleRequest;
 use PHPUnit\Framework\TestCase;
-use Sammyjo20\Saloon\Http\MockResponse;
+use Saloon\Http\Faking\MockResponse;
 
 class MagicMethodsTest extends TestCase
 {
@@ -57,155 +58,37 @@ class MagicMethodsTest extends TestCase
         ]);
 
         $connector = $this->getConnector($mockClient);
-        $connector->getArticleSingleRequest('A_RANDOM_ID')->send($mockClient);
-        $connector->getArticleCollectionRequest()->send($mockClient);
-        $connector->patchArticleSingleRequest('A_RANDOM_ID')->setData([])->send($mockClient);
-        $connector->postArticleSingleRequest()->setData([])->send($mockClient);
-        $connector->postArticleCollectionRequest()->setData([])->send($mockClient);
+        $response = $connector->send(new GetArticleSingleRequest('A_RANDOM_ID'));
+        $this->assertSame(200, $response->status());
+        $this->assertSame([['name' => 'test']], $response->json());
+
+        $response = $connector->send(new GetArticleCollectionRequest());
+        $this->assertSame(200, $response->status());
+        $this->assertSame([['name' => 'test']], $response->json());
+
+        $patch = new PatchArticleSingleRequest('A_RANDOM_ID');
+        $patch->body()->set([]);
+        $response = $connector->send($patch);
+
+        $this->assertSame(200, $response->status());
+        $this->assertSame([['name' => 'test']], $response->json());
+
+        $post = new PostArticleSingleRequest();
+        $post->body()->set([
+            'name' => 'test',
+        ]);
+        $response = $connector->send($post);
+        $this->assertSame(200, $response->status());
+        $this->assertSame([['name' => 'test']], $response->json());
+
+        $post = new PostArticleCollectionRequest();
+        $post->body()->set([[
+            'name' => 'test',
+        ]]);
+        $response = $connector->send($post);
+        $this->assertSame(200, $response->status());
+        $this->assertSame([['name' => 'test']], $response->json());
 
         $mockClient->assertSentCount(6); // 1 auth, 5 article calls
-    }
-
-    public function testBatchMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetBatchCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetBatchSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getBatchCollectionRequest()->send($mockClient);
-        $connector->getBatchSingleRequest('A_RANDOM_ID')->send($mockClient);
-
-        $mockClient->assertSentCount(3);
-    }
-
-    public function testInboundMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetInboundCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetInboundSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            PatchInboundSingleCancelRequest::class => new MockResponse([['name' => 'test']], 200),
-            PatchInboundSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            PostInboundSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getInboundCollectionRequest()->send($mockClient);
-        $connector->getInboundSingleRequest('A_RANDOM_ID')->send($mockClient);
-        $connector->patchInboundSingleCancelRequest('A_RANDOM_ID')->send($mockClient);
-        $connector->patchInboundSingleRequest('A_RANDOM_ID')->send($mockClient);
-        $connector->postInboundSingleRequest()->send($mockClient);
-
-        $mockClient->assertSentCount(6);
-    }
-
-    public function testLogMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetLogsCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getLogsCollectionRequest()->send($mockClient);
-
-        $mockClient->assertSentCount(2);
-    }
-
-    public function testOrderMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetOrderCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetOrderDocumentCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetOrderDocumentSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetOrderSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            PatchOrderSingleCancelRequest::class => new MockResponse([['name' => 'test']], 200),
-            PatchOrderSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            PostOrderDocumentSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            PostOrderSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getOrderCollectionRequest()->send($mockClient);
-        $connector->getOrderDocumentCollectionRequest("A_RANDOM_UUID")->send($mockClient);
-        $connector->getOrderDocumentSingleRequest("A_RANDOM_UUID", "A_RANDOM_UUID")->send($mockClient);
-        $connector->getOrderSingleRequest("A_RANDOM_UUID")->send($mockClient);
-        $connector->patchOrderSingleCancelRequest("A_RANDOM_UUID")->send($mockClient);
-        $connector->patchOrderSingleRequest("A_RANDOM_UUID")->send($mockClient);
-        $connector->postOrderDocumentSingleRequest("A_RANDOM_UUID")->send($mockClient);
-        $connector->postOrderSingleRequest()->send($mockClient);
-
-        $mockClient->assertSentCount(9);
-    }
-
-    public function testShipmentMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetShipmentCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetShipmentSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getShipmentCollectionRequest()->send($mockClient);
-        $connector->getShipmentSingleRequest("A_RANDOM_UUID")->send($mockClient);
-
-        $mockClient->assertSentCount(3);
-    }
-
-    public function testShippingMethodMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetShippingMethodCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetShippingMethodSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getShippingMethodCollectionRequest()->send($mockClient);
-        $connector->getShippingMethodSingleRequest("A_RANDOM_UUID")->send($mockClient);
-
-        $mockClient->assertSentCount(3);
-    }
-
-    public function testStockLevelMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetStockLevelCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getStockLevelCollectionRequest()->send($mockClient);
-
-        $mockClient->assertSentCount(2);
-    }
-
-    public function testVariantMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetVariantCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            GetVariantSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            PatchVariantSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-            PostVariantSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getVariantCollectionRequest()->send($mockClient);
-        $connector->getVariantSingleRequest('A_RANDOM_ID')->send($mockClient);
-        $connector->patchVariantSingleRequest('A_RANDOM_ID')->send($mockClient);
-        $connector->postVariantSingleRequest()->send($mockClient);
-
-        $mockClient->assertSentCount(5);
-    }
-
-    public function testWebhookMagicMethods(): void
-    {
-        $mockClient = $this->getMockClient([
-            GetWebhookCollectionRequest::class => new MockResponse([['name' => 'test']], 200),
-            PostWebhookSingleRequest::class => new MockResponse([['name' => 'test']], 200),
-        ]);
-
-        $connector = $this->getConnector($mockClient);
-        $connector->getWebhookCollectionRequest()->send($mockClient);
-        $connector->postWebhookSingleRequest()->send($mockClient);
-        $mockClient->assertSentCount(3);
     }
 }

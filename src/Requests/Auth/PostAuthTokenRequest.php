@@ -8,22 +8,23 @@
 
 namespace MiddlewareConnector\Requests\Auth;
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
+use Saloon\Contracts\Body\HasBody;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
+use Saloon\Traits\Body\HasJsonBody;
 
-class PostAuthTokenRequest extends SaloonRequest
+class PostAuthTokenRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected ?string $method = Saloon::POST;
+    protected Method $method = Method::POST;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return '/wms/auth/login/';
     }
 
-    public function defaultData(): array
+    public function defaultBody(): array
     {
         return [
             'username' => $this->username,

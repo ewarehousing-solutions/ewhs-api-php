@@ -8,14 +8,14 @@
 
 namespace MiddlewareConnector\Requests\Inbound;
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 
-class GetInboundCollectionRequest extends SaloonRequest
+class GetInboundCollectionRequest extends Request
 {
-    protected ?string $method = Saloon::GET;
+    protected Method $method = Method::GET;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return 'wms/inbounds';
     }
