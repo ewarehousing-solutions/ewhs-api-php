@@ -8,13 +8,11 @@
 namespace MiddlewareConnector\Tests;
 
 use MiddlewareConnector\Exceptions\AuthenticationException;
-use MiddlewareConnector\MiddlewareAuthenticator;
 use MiddlewareConnector\MiddlewareConnector;
 use MiddlewareConnector\Requests\Article\GetArticleCollectionRequest;
 use MiddlewareConnector\Requests\Auth\PostAuthTokenRequest;
 use MiddlewareConnector\Requests\Auth\PostRefreshTokenRequest;
 use PHPUnit\Framework\TestCase;
-use Saloon\Exceptions\NoMockResponseFoundException;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 

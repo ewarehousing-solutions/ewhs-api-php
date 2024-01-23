@@ -20,8 +20,10 @@ class MiddlewareAuthenticator implements Authenticator
     public function set(PendingRequest $pendingRequest): void
     {
         // Make sure to ignore the authentication request to prevent loops.
-        if ($pendingRequest->getRequest() instanceof PostAuthTokenRequest
-            || $pendingRequest->getRequest() instanceof PostRefreshTokenRequest) {
+        if (
+            $pendingRequest->getRequest() instanceof PostAuthTokenRequest
+            || $pendingRequest->getRequest() instanceof PostRefreshTokenRequest
+        ) {
             return;
         }
         $connector = $pendingRequest->getConnector();
