@@ -42,57 +42,18 @@ use MiddlewareConnector\Requests\Variant\PatchVariantSingleRequest;
 use MiddlewareConnector\Requests\Variant\PostVariantSingleRequest;
 use MiddlewareConnector\Requests\Webhook\GetWebhookCollectionRequest;
 use MiddlewareConnector\Requests\Webhook\PostWebhookSingleRequest;
-use Sammyjo20\Saloon\Http\SaloonConnector;
-use Sammyjo20\Saloon\Http\SaloonRequest;
+use Saloon\Contracts\Authenticator;
+use Saloon\Contracts\PendingRequest;
+use Saloon\Http\Connector;
+use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
+use Saloon\RateLimitPlugin\Limit;
+use Saloon\RateLimitPlugin\Stores\MemoryStore;
+use Saloon\RateLimitPlugin\Traits\HasRateLimits;
 
-/**
- * @method GetArticleCollectionRequest getArticleCollectionRequest
- * @method GetArticleSingleRequest getArticleSingleRequest(string $uuid)
- * @method PostArticleCollectionRequest postArticleCollectionRequest
- * @method PostArticleSingleRequest postArticleSingleRequest
- * @method PatchArticleSingleRequest patchArticleSingleRequest(string $uuid)
- *
- * @method GetBatchCollectionRequest getBatchCollectionRequest
- * @method GetBatchSingleRequest getBatchSingleRequest(string $uuid)
- *
- * @method GetInboundCollectionRequest getInboundCollectionRequest
- * @method GetInboundSingleRequest GetInboundSingleRequest(string $uuid)
- * @method PostInboundSingleRequest postInboundSingleRequest
- * @method PatchInboundSingleRequest patchInboundSingleRequest(string $uuid)
- * @method PatchInboundSingleCancelRequest patchInboundSingleCancelRequest(string $uuid)
- *
- * @method GetLogsCollectionRequest getLogsCollectionRequest
- *
- * @method GetOrderCollectionRequest getOrderCollectionRequest
- * @method GetOrderDocumentCollectionRequest getOrderDocumentCollectionRequest(string $uuid)
- * @method GetOrderDocumentSingleRequest getOrderDocumentSingleRequest(string $uuid, string $documentUuid)
- * @method GetOrderSingleRequest getOrderSingleRequest(string $uuid)
- * @method PatchOrderSingleCancelRequest patchOrderSingleCancelRequest(string $uuid)
- * @method PatchOrderSingleRequest patchOrderSingleRequest(string $uuid)
- * @method PostOrderDocumentSingleRequest postOrderDocumentSingleRequest(string $uuid)
- * @method PostOrderSingleRequest postOrderSingleRequest
- *
- * @method GetShipmentCollectionRequest getShipmentCollectionRequest
- * @method GetShipmentSingleRequest getShipmentSingleRequest(string $uuid)
- *
- * @method GetStockLevelCollectionRequest getStockLevelCollectionRequest
- *
- * @method GetVariantCollectionRequest GetVariantCollectionRequest
- * @method GetVariantSingleRequest GetVariantSingleRequest(string $uuid)
- * @method PatchVariantSingleRequest PatchVariantSingleRequest(string $uuid)
- * @method PostVariantSingleRequest PostVariantSingleRequest
- *
- * @method GetShippingMethodCollectionRequest getShippingMethodCollectionRequest
- * @method GetShippingMethodSingleRequest getShippingMethodSingleRequest(string $uuid)
- *
- * @method PostRefreshTokenRequest postRefreshTokenRequest(string $refreshToken)
- * @method PostAuthTokenRequest postAuthTokenRequest(string $username, string $password)
- *
- * @method GetWebhookCollectionRequest getWebhookCollectionRequest
- * @method PostWebhookSingleRequest postWebhookSingleRequest
- */
-class MiddlewareConnector extends SaloonConnector
+class MiddlewareConnector extends Connector
 {
+    use HasRateLimits;
+
     public const BASE_URL_EU_DEV = 'https://eu-dev.middleware.ewarehousing-solutions.com';
     public const BASE_URL_EU = 'https://eu.middleware.ewarehousing-solutions.com';
     public const BASE_URL_US = 'https://us.middleware.ewarehousing-solutions.com';
@@ -145,8 +106,6 @@ class MiddlewareConnector extends SaloonConnector
         PostWebhookSingleRequest::class,
     ];
 
-    private MiddlewareKeyChain $middlewareKeyChain;
-
     public function __construct(
         private string $wmsCode,
         private string $customerCode,
@@ -155,7 +114,11 @@ class MiddlewareConnector extends SaloonConnector
         private ?string $password = null,
         private ?string $refreshToken = null,
     ) {
-        $this->middlewareKeyChain = new MiddlewareKeyChain($this->username, $this->password, $this->refreshToken);
+    }
+
+    protected function defaultAuth(): ?Authenticator
+    {
+        return new MiddlewareAuthenticator($this->username, $this->password, $this->refreshToken);
     }
 
     public static function create(
@@ -188,7 +151,7 @@ class MiddlewareConnector extends SaloonConnector
         );
     }
 
-    public function defineBaseUrl(): string
+    public function resolveBaseUrl(): string
     {
         return $this->baseUrl;
     }
@@ -212,8 +175,20 @@ class MiddlewareConnector extends SaloonConnector
         ];
     }
 
-    public function boot(SaloonRequest $request): void
+    public function boot(PendingRequest $pendingRequest): void
     {
-        $this->authenticate($this->middlewareKeyChain);
+//        $this->authenticate($this->middlewareKeyChain);
+    }
+
+    protected function resolveLimits(): array
+    {
+        return [
+            Limit::allow(60)->everyMinute(),
+        ];
+    }
+
+    protected function resolveRateLimitStore(): RateLimitStore
+    {
+        return new MemoryStore();
     }
 }

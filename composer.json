@@ -27,7 +27,8 @@
     },
     "require": {
         "php": ">=8.0",
-        "sammyjo20/saloon": "^0.9.1"
+        "saloonphp/saloon": "^2.0",
+        "saloonphp/rate-limit-plugin": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

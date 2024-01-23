@@ -10,8 +10,8 @@ namespace MiddlewareConnector\Tests;
 use MiddlewareConnector\MiddlewareConnector;
 use MiddlewareConnector\Requests\Auth\PostAuthTokenRequest;
 use MiddlewareConnector\Requests\Auth\PostRefreshTokenRequest;
-use Sammyjo20\Saloon\Clients\MockClient;
-use Sammyjo20\Saloon\Http\MockResponse;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
 
 trait ConnectorTrait
 {
@@ -33,6 +33,6 @@ trait ConnectorTrait
             'wmsCode',
             'CustomerCode',
             MiddlewareConnector::BASE_URL_EU_DEV,
-        )->setConfig(['mockClient' => $mockClient]);
+        )->withMockClient($mockClient);
     }
 }
