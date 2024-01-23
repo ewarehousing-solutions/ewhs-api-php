@@ -34,7 +34,7 @@ $connector = MiddlewareConnector::create(
     MiddlewareConnector::BASE_URL_EU_DEV,
 );
 
-$response = $connector->getArticleCollectionRequest()->send($mockClient);
+$response = $connector->send(new GetArticleCollectionRequest());
 
 $response->status(); // 200, 201, 400, 500 etc...
 
@@ -51,7 +51,7 @@ $connector = MiddlewareConnector::createWithRefreshToken(
     MiddlewareConnector::BASE_URL_EU_DEV,
 );
 
-$response = $connector->getArticleCollectionRequest()->send($mockClient);
+$response = $connector->send(new GetArticleCollectionRequest());
 $response->status(); // 200, 201, 400, 500 etc...
 $response->json();
 ```

@@ -6,7 +6,7 @@ use MiddlewareConnector\Exceptions\AuthenticationException;
 use MiddlewareConnector\Requests\Auth\PostAuthTokenRequest;
 use MiddlewareConnector\Requests\Auth\PostRefreshTokenRequest;
 use Saloon\Contracts\Authenticator;
-use Saloon\Contracts\PendingRequest;
+use Saloon\Http\PendingRequest;
 
 class MiddlewareAuthenticator implements Authenticator
 {
@@ -20,8 +20,10 @@ class MiddlewareAuthenticator implements Authenticator
     public function set(PendingRequest $pendingRequest): void
     {
         // Make sure to ignore the authentication request to prevent loops.
-        if ($pendingRequest->getRequest() instanceof PostAuthTokenRequest
-            || $pendingRequest->getRequest() instanceof PostRefreshTokenRequest) {
+        if (
+            $pendingRequest->getRequest() instanceof PostAuthTokenRequest
+            || $pendingRequest->getRequest() instanceof PostRefreshTokenRequest
+        ) {
             return;
         }
         $connector = $pendingRequest->getConnector();
