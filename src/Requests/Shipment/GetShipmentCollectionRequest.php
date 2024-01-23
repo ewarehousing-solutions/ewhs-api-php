@@ -8,14 +8,14 @@
 
 namespace MiddlewareConnector\Requests\Shipment;
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 
-class GetShipmentCollectionRequest extends SaloonRequest
+class GetShipmentCollectionRequest extends Request
 {
-    protected ?string $method = Saloon::GET;
+    protected Method $method = Method::GET;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return 'wms/shipments';
     }

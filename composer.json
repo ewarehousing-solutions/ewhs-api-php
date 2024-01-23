@@ -27,6 +27,7 @@
     },
     "require": {
         "php": ">=8.0",
+        "saloonphp/saloon": "^2.0",
         "sammyjo20/saloon": "^0.9.1"
     },
     "require-dev": {
