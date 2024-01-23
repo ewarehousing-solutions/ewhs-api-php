@@ -43,7 +43,7 @@ use MiddlewareConnector\Requests\Variant\PostVariantSingleRequest;
 use MiddlewareConnector\Requests\Webhook\GetWebhookCollectionRequest;
 use MiddlewareConnector\Requests\Webhook\PostWebhookSingleRequest;
 use Saloon\Contracts\Authenticator;
-use Saloon\Contracts\PendingRequest;
+use Saloon\Http\PendingRequest;
 use Saloon\Http\Connector;
 use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
 use Saloon\RateLimitPlugin\Limit;

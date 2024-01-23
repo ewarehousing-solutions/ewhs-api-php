@@ -6,7 +6,7 @@ use MiddlewareConnector\Exceptions\AuthenticationException;
 use MiddlewareConnector\Requests\Auth\PostAuthTokenRequest;
 use MiddlewareConnector\Requests\Auth\PostRefreshTokenRequest;
 use Saloon\Contracts\Authenticator;
-use Saloon\Contracts\PendingRequest;
+use Saloon\Http\PendingRequest;
 
 class MiddlewareAuthenticator implements Authenticator
 {
