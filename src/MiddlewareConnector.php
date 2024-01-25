@@ -40,6 +40,7 @@ use MiddlewareConnector\Requests\Variant\GetVariantCollectionRequest;
 use MiddlewareConnector\Requests\Variant\GetVariantSingleRequest;
 use MiddlewareConnector\Requests\Variant\PatchVariantSingleRequest;
 use MiddlewareConnector\Requests\Variant\PostVariantSingleRequest;
+use MiddlewareConnector\Requests\Webhook\DeleteWebhookSingleRequest;
 use MiddlewareConnector\Requests\Webhook\GetWebhookCollectionRequest;
 use MiddlewareConnector\Requests\Webhook\PostWebhookSingleRequest;
 use Saloon\Contracts\Authenticator;
@@ -104,6 +105,7 @@ class MiddlewareConnector extends Connector
         # webhooks
         GetWebhookCollectionRequest ::class,
         PostWebhookSingleRequest::class,
+        DeleteWebhookSingleRequest::class,
     ];
 
     public function __construct(
