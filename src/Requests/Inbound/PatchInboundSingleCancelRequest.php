@@ -21,7 +21,7 @@ class PatchInboundSingleCancelRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return 'wms/inbounds/' . $this->uuid . '/cancel';
+        return 'wms/inbounds/' . $this->uuid . '/cancel/';
     }
 
     public function __construct(

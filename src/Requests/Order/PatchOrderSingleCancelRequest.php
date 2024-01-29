@@ -21,7 +21,7 @@ class PatchOrderSingleCancelRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return 'wms/orders/' . $this->uuid . '/cancel';
+        return 'wms/orders/' . $this->uuid . '/cancel/';
     }
 
     public function __construct(
