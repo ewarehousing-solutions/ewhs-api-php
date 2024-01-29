@@ -20,8 +20,16 @@ class GetShipmentSingleRequest extends Request
         return 'wms/shipments/' . $this->uuid;
     }
 
+    public function defaultHeaders(): array
+    {
+        return [
+            'Expand' => implode(',', $this->expands),
+        ];
+    }
+
     public function __construct(
-        public string $uuid
+        public string $uuid,
+        public array $expands = [],
     ) {
     }
 }

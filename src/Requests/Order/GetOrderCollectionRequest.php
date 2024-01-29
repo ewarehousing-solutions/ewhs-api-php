@@ -19,4 +19,16 @@ class GetOrderCollectionRequest extends Request
     {
         return 'wms/orders';
     }
+
+    public function defaultHeaders(): array
+    {
+        return [
+            'Expand' => implode(',', $this->expands),
+        ];
+    }
+
+    public function __construct(
+        public array $expands = [],
+    ) {
+    }
 }

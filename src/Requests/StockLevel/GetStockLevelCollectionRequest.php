@@ -19,4 +19,16 @@ class GetStockLevelCollectionRequest extends Request
     {
         return 'wms/stock';
     }
+
+    public function defaultHeaders(): array
+    {
+        return [
+            'Expand' => implode(',', $this->expands),
+        ];
+    }
+
+    public function __construct(
+        public array $expands = [],
+    ) {
+    }
 }

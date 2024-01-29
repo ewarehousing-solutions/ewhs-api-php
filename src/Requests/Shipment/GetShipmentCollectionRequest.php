@@ -19,4 +19,16 @@ class GetShipmentCollectionRequest extends Request
     {
         return 'wms/shipments';
     }
+
+    public function defaultHeaders(): array
+    {
+        return [
+            'Expand' => implode(',', $this->expands),
+        ];
+    }
+
+    public function __construct(
+        public array $expands = [],
+    ) {
+    }
 }
