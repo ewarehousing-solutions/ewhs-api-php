@@ -21,7 +21,7 @@ class PatchInboundSingleRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return 'wms/inbounds/' . $this->uuid;
+        return 'wms/inbounds/' . $this->uuid . '/';
     }
 
     public function __construct(

@@ -21,7 +21,7 @@ class PatchVariantSingleRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return 'wms/variants/' . $this->uuid;
+        return 'wms/variants/' . $this->uuid . '/';
     }
 
     public function __construct(
