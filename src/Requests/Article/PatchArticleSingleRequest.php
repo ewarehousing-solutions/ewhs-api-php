@@ -21,7 +21,7 @@ class PatchArticleSingleRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return 'wms/articles/' . $this->uuid;
+        return 'wms/articles/' . $this->uuid . '/';
     }
 
     public function __construct(

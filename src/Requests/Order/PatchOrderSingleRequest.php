@@ -21,7 +21,7 @@ class PatchOrderSingleRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return 'wms/orders/' . $this->uuid;
+        return 'wms/orders/' . $this->uuid . '/';
     }
 
     public function __construct(
