@@ -57,10 +57,12 @@ use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
 use Saloon\RateLimitPlugin\Limit;
 use Saloon\RateLimitPlugin\Stores\MemoryStore;
 use Saloon\RateLimitPlugin\Traits\HasRateLimits;
+use Saloon\Traits\Plugins\AlwaysThrowOnErrors;
 
 class MiddlewareConnector extends Connector implements HasPagination
 {
     use HasRateLimits;
+    use AlwaysThrowOnErrors;
 
     public const BASE_URL_EU_DEV = 'https://eu-dev.middleware.ewarehousing-solutions.com';
     public const BASE_URL_EU = 'https://eu.middleware.ewarehousing-solutions.com';
