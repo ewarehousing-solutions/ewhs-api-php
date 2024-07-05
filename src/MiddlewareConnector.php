@@ -8,6 +8,8 @@
 
 namespace MiddlewareConnector;
 
+use MiddlewareConnector\Requests\Customer\GetCustomerCollectionRequest;
+use MiddlewareConnector\Requests\Customer\GetCustomerSingleRequest;
 use MiddlewareConnector\Requests\Inbound\GetInboundCollectionRequest;
 use MiddlewareConnector\Requests\Inbound\GetInboundSingleRequest;
 use MiddlewareConnector\Requests\Inbound\PatchInboundSingleCancelRequest;
@@ -69,6 +71,9 @@ class MiddlewareConnector extends Connector
         # batches
         GetBatchCollectionRequest::class,
         GetBatchSingleRequest::class,
+        # customers
+        GetCustomerCollectionRequest::class,
+        GetCustomerSingleRequest::class,
         # inbounds
         GetInboundCollectionRequest::class,
         GetInboundSingleRequest::class,
