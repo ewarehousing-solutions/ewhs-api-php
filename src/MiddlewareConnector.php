@@ -48,12 +48,17 @@ use MiddlewareConnector\Requests\Webhook\PostWebhookSingleRequest;
 use Saloon\Contracts\Authenticator;
 use Saloon\Http\PendingRequest;
 use Saloon\Http\Connector;
+use Saloon\Http\Request;
+use Saloon\Http\Response;
+use Saloon\PaginationPlugin\Contracts\HasPagination;
+use Saloon\PaginationPlugin\OffsetPaginator;
+use Saloon\PaginationPlugin\PagedPaginator;
 use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
 use Saloon\RateLimitPlugin\Limit;
 use Saloon\RateLimitPlugin\Stores\MemoryStore;
 use Saloon\RateLimitPlugin\Traits\HasRateLimits;
 
-class MiddlewareConnector extends Connector
+class MiddlewareConnector extends Connector implements HasPagination
 {
     use HasRateLimits;
 
@@ -197,5 +202,33 @@ class MiddlewareConnector extends Connector
     protected function resolveRateLimitStore(): RateLimitStore
     {
         return new MemoryStore();
+    }
+
+    public function paginate(Request $request): OffsetPaginator
+    {
+        return new class(connector: $this, request: $request) extends OffsetPaginator
+        {
+            protected ?int $perPageLimit = 100;
+
+            protected function isLastPage(Response $response): bool
+            {
+                return count($this->getPageItems($response, $this->request)) < $this->perPageLimit;
+            }
+
+            protected function getPageItems(Response $response, Request $request): array
+            {
+                return $response->json();
+            }
+
+            protected function applyPagination(Request $request): Request
+            {
+                $request->query()->merge([
+                    'page' => $this->getCurrentPage(),
+                    'limit' => $this->perPageLimit,
+                ]);
+
+                return $request;
+            }
+        };
     }
 }
