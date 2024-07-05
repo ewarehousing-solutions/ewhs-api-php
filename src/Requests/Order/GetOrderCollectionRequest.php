@@ -10,8 +10,9 @@ namespace MiddlewareConnector\Requests\Order;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-class GetOrderCollectionRequest extends Request
+class GetOrderCollectionRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 

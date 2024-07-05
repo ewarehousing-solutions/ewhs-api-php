@@ -10,8 +10,9 @@ namespace MiddlewareConnector\Requests\StockLevel;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-class GetStockLevelCollectionRequest extends Request
+class GetStockLevelCollectionRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 

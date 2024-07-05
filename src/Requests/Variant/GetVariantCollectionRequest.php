@@ -10,8 +10,9 @@ namespace MiddlewareConnector\Requests\Variant;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-class GetVariantCollectionRequest extends Request
+class GetVariantCollectionRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 

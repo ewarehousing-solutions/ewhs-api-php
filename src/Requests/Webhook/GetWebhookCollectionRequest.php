@@ -10,8 +10,9 @@ namespace MiddlewareConnector\Requests\Webhook;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-class GetWebhookCollectionRequest extends Request
+class GetWebhookCollectionRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 
